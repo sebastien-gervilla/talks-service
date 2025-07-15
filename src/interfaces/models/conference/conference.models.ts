@@ -4,7 +4,7 @@ export interface Get {
     room: Room;
     date: Date;
     slot: number;
-    participants: number;
+    users: number[];
 }
 
 export interface GetQuery {

@@ -42,7 +42,7 @@ export const conferenceController = async (
                 date: loadedConference.date,
                 slot: loadedConference.slot,
                 room: loadedConference.room,
-                participants: loadedConference.users.getItems().length,
+                users: loadedConference.users.getItems().map(user => user.id),
             });
         }
 
