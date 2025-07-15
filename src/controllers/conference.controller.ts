@@ -44,11 +44,11 @@ export const conferenceController = async (
         if (!body.name || !body.room || !body.slot || !body.speakerId)
             return reply.status(400).send({ type: 'missing-fields' });
 
-        if (!isValidSlot(body.slot))
-            return reply.status(400).send({ type: 'invalid-slot' });
-
         if (!isValidDate(body.date))
             return reply.status(400).send({ type: 'invalid-date' });
+
+        if (!isValidSlot(body.slot))
+            return reply.status(400).send({ type: 'invalid-slot' });
 
         if (!Object.values(Models.Conference.Room).includes(body.room))
             return reply.status(400).send({ type: 'room-not-found' });
@@ -63,6 +63,7 @@ export const conferenceController = async (
         const conference = new entities.conference();
         conference.name = body.name;
         conference.room = body.room;
+        conference.date = body.date;
         conference.slot = body.slot;
         conference.speaker = speaker;
 
@@ -97,11 +98,11 @@ export const conferenceController = async (
         if (!body.name || !body.room || !body.slot || !body.speakerId)
             return reply.status(400).send({ type: 'missing-fields' });
 
-        if (!isValidSlot(body.slot))
-            return reply.status(400).send({ type: 'invalid-slot' });
-
         if (!isValidDate(body.date))
             return reply.status(400).send({ type: 'invalid-date' });
+
+        if (!isValidSlot(body.slot))
+            return reply.status(400).send({ type: 'invalid-slot' });
 
         if (!Object.values(Models.Conference.Room).includes(body.room))
             return reply.status(400).send({ type: 'room-not-found' });
@@ -115,6 +116,7 @@ export const conferenceController = async (
 
         conference.name = body.name;
         conference.room = body.room;
+        conference.date = body.date;
         conference.slot = body.slot;
         conference.speaker = speaker;
 

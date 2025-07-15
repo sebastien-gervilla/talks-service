@@ -1,10 +1,13 @@
 import { Models } from '../interfaces';
 import {
+    Collection,
     Entity,
     Enum,
+    ManyToMany,
     PrimaryKey,
     Property,
 } from '@mikro-orm/postgresql';
+import { Conference } from './conference.entity';
 
 @Entity()
 export class User {
@@ -31,4 +34,7 @@ export class User {
 
     @Property()
     updatedAt: Date = new Date();
+
+    @ManyToMany({ entity: () => Conference })
+    conferences = new Collection<Conference>(this);
 }

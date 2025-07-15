@@ -1,12 +1,15 @@
 import { Models } from '../interfaces';
 import {
+    Collection,
     Entity,
     Enum,
+    ManyToMany,
     ManyToOne,
     PrimaryKey,
     Property,
 } from '@mikro-orm/postgresql';
 import { Speaker } from './speaker.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Conference {
@@ -33,4 +36,7 @@ export class Conference {
 
     @ManyToOne(() => Speaker)
     speaker!: Speaker;
+
+    @ManyToMany({ entity: () => User })
+    users = new Collection<User>(this);
 }
