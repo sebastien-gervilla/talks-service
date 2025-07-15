@@ -1,4 +1,4 @@
-import { Models } from '@/interfaces';
+import { Models } from '../interfaces';
 import {
     Entity,
     Enum,
