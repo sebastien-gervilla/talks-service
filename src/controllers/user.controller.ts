@@ -12,6 +12,29 @@ import { environment } from '@/configuration/environment';
 export const userController = async (
     fastify: FastifyInstance,
 ) => {
+    fastify.get<{
+        Reply: Responses.User.GetCurrent;
+    }>('/users/current', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        const user = await request.em.findOne(entities.user, {
+            id: request.user.id,
+        });
+
+        if (!user)
+            return reply.status(401).send();
+
+        return reply.status(200).send({
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role,
+        });
+    });
+
     fastify.post<{
         Body: Requests.User.Register['body'];
         Reply: Responses.User.Register;

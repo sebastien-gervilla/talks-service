@@ -3,6 +3,15 @@ export interface Get {
     firstName: string;
     lastName: string;
     email: string;
+    role: Role;
+}
+
+export interface Current {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: Role;
 }
 
 export interface Register {

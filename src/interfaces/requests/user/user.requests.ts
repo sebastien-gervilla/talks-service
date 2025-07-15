@@ -1,6 +1,8 @@
 import { Models } from "@/interfaces";
 import { HttpRequest } from "@/interfaces/http-interface";
 
+export interface GetCurrent extends HttpRequest { }
+
 export interface Register extends HttpRequest {
     body: Models.User.Register;
 }
