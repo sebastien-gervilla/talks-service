@@ -17,11 +17,23 @@ const fastify = Fastify({
 
 const initializeServer = async () => {
 
-    const { port, allowedOrigin, nodeEnv } = environment;
+    const { port, allowedOrigin } = environment;
 
     // Database Connection
-    if (nodeEnv !== 'test')
-        await initializeDatabaseConnection();
+    const orm = await initializeDatabaseConnection();
+
+    // Make MikroORM available app-wide
+    fastify.decorate('orm', orm);
+
+    // Create a fresh EM for each request
+    fastify.addHook('onRequest', async (request, _reply) => {
+        request.em = orm.em.fork();
+    });
+
+    // Shut down the connection when closing the app
+    fastify.addHook('onClose', async () => {
+        await orm.close();
+    });
 
     // Fastify configuration
     fastify.register(fastifyCors, {
