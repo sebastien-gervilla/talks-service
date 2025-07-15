@@ -20,10 +20,10 @@ export class Conference {
     room!: Models.Conference.Room;
 
     @Property()
-    startsOn: Date = new Date();
+    date!: Date;
 
     @Property()
-    endsOn: Date = new Date();
+    slot!: number;
 
     @Property()
     createdAt: Date = new Date();

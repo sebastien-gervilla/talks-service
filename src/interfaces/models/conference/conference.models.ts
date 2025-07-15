@@ -2,23 +2,30 @@ export interface Get {
     id: number;
     name: string;
     room: Room;
-    startsOn: Date;
-    endsOn: Date;
+    date: Date;
+    slot: number;
+}
+
+export interface GetQuery {
+    name?: string;
+    room?: Room;
+    date?: Date;
+    speakerId?: number;
 }
 
 export interface Create {
     name: string;
     room: Room;
-    startsOn: Date;
-    endsOn: Date;
+    date: Date;
+    slot: number;
     speakerId: number;
 }
 
 export interface Update {
     name: string;
     room: Room;
-    startsOn: Date;
-    endsOn: Date;
+    date: Date;
+    slot: number;
     speakerId: number;
 }
 

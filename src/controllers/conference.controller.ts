@@ -3,18 +3,27 @@ import { FastifyInstance } from "fastify";
 import { middlewares } from "@/middlewares";
 import { Models, Requests, Responses } from "@/interfaces";
 import { entities } from "@/entities";
+import { stripTime } from "@/utils/date-utils";
 
 export const conferenceController = async (
     fastify: FastifyInstance,
 ) => {
     fastify.get<{
+        Querystring: Requests.Conference.Get['query'];
         Reply: Responses.Conference.Get;
     }>('/conferences', { preHandler: middlewares.authentication }, async (request, reply) => {
 
         if (!request.user)
             return reply.status(401).send();
 
-        const conferences = await request.em.findAll(entities.conference);
+        const { query } = request;
+
+        const conferences = await request.em.find(entities.conference, {
+            name: { $like: `%${query.name}%` },
+            date: query.date ? stripTime(query.date) : undefined,
+            room: query.room,
+            speaker: query.speakerId,
+        });
 
         return reply.status(200).send(conferences);
     });
@@ -32,8 +41,14 @@ export const conferenceController = async (
 
         const { body } = request;
 
-        if (!body.name || !body.room || !body.startsOn || !body.endsOn || !body.speakerId)
+        if (!body.name || !body.room || !body.slot || !body.speakerId)
             return reply.status(400).send({ type: 'missing-fields' });
+
+        if (!isValidSlot(body.slot))
+            return reply.status(400).send({ type: 'invalid-slot' });
+
+        if (!isValidDate(body.date))
+            return reply.status(400).send({ type: 'invalid-date' });
 
         if (!Object.values(Models.Conference.Room).includes(body.room))
             return reply.status(400).send({ type: 'room-not-found' });
@@ -48,8 +63,7 @@ export const conferenceController = async (
         const conference = new entities.conference();
         conference.name = body.name;
         conference.room = body.room;
-        conference.startsOn = body.startsOn;
-        conference.endsOn = body.endsOn;
+        conference.slot = body.slot;
         conference.speaker = speaker;
 
         await request.em.persistAndFlush(conference);
@@ -80,8 +94,14 @@ export const conferenceController = async (
         if (!conference)
             return reply.status(404).send();
 
-        if (!body.name || !body.room || !body.startsOn || !body.endsOn || !body.speakerId)
+        if (!body.name || !body.room || !body.slot || !body.speakerId)
             return reply.status(400).send({ type: 'missing-fields' });
+
+        if (!isValidSlot(body.slot))
+            return reply.status(400).send({ type: 'invalid-slot' });
+
+        if (!isValidDate(body.date))
+            return reply.status(400).send({ type: 'invalid-date' });
 
         if (!Object.values(Models.Conference.Room).includes(body.room))
             return reply.status(400).send({ type: 'room-not-found' });
@@ -95,8 +115,7 @@ export const conferenceController = async (
 
         conference.name = body.name;
         conference.room = body.room;
-        conference.startsOn = body.startsOn;
-        conference.endsOn = body.endsOn;
+        conference.slot = body.slot;
         conference.speaker = speaker;
 
         await request.em.flush();
@@ -131,3 +150,15 @@ export const conferenceController = async (
         return reply.status(204).send();
     });
 }
+
+// Slot must be between 1 and 10
+const isValidSlot = (slot: number) => slot > 0 && slot <= 10;
+
+const isValidDate = (date: Date) => {
+    // Strip times, for timezones
+    const inputDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return inputDate >= EVENT_START_DATE && inputDate <= EVENT_END_DATE;
+};
+
+const EVENT_START_DATE = new Date(2025, 5, 17); // June 17, 2025
+const EVENT_END_DATE = new Date(2025, 5, 20);   // June 20, 2025

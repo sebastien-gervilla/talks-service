@@ -10,6 +10,8 @@ export interface Post extends HttpResponses {
     400: {
         type:
         | 'missing-fields'
+        | 'invalid-date'
+        | 'invalid-slot'
         | 'room-not-found'
         | 'speaker-not-found'
         | 'unknown-error'
@@ -22,6 +24,8 @@ export interface Put extends HttpResponses {
     400: {
         type:
         | 'missing-fields'
+        | 'invalid-date'
+        | 'invalid-slot'
         | 'room-not-found'
         | 'speaker-not-found'
         | 'unknown-error'
