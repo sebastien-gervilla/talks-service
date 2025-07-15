@@ -8,3 +8,8 @@ export interface Get extends HttpResponses {
 export interface Post extends HttpResponses {
     204: never;
 }
+
+export interface Put extends HttpResponses {
+    204: never;
+    404: never;
+}

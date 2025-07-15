@@ -10,3 +10,9 @@ export interface Create {
     lastName: string;
     biography: string;
 }
+
+export interface Update {
+    firstName: string;
+    lastName: string;
+    biography: string;
+}

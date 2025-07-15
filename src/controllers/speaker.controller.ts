@@ -37,6 +37,40 @@ export const speakerController = async (
         speaker.lastName = body.lastName;
         speaker.biography = body.biography;
 
+        await request.em.persistAndFlush(speaker);
+
+        return reply.status(204).send();
+    });
+
+    fastify.put<{
+        Params: {
+            id: number;
+        };
+        Body: Requests.Speaker.Put['body'];
+        Reply: Responses.Speaker.Put;
+    }>('/speakers/:id', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        if (request.user.role !== Models.User.Role.Administrator)
+            return reply.status(403).send();
+
+        const { params, body } = request;
+
+        const speaker = await request.em.findOne(entities.speaker, {
+            id: params.id,
+        });
+
+        if (!speaker)
+            return reply.status(404).send();
+
+        speaker.firstName = body.firstName;
+        speaker.lastName = body.lastName;
+        speaker.biography = body.biography;
+
+        await request.em.flush();
+
         return reply.status(204).send();
     });
 }
