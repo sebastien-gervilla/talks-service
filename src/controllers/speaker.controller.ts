@@ -32,6 +32,9 @@ export const speakerController = async (
 
         const { body } = request;
 
+        if (!body.firstName || !body.lastName || !body.biography)
+            return reply.status(400).send({ type: 'missing-fields' });
+
         const speaker = new entities.speaker();
         speaker.firstName = body.firstName;
         speaker.lastName = body.lastName;
@@ -65,6 +68,9 @@ export const speakerController = async (
         if (!speaker)
             return reply.status(404).send();
 
+        if (!body.firstName || !body.lastName || !body.biography)
+            return reply.status(400).send({ type: 'missing-fields' });
+
         speaker.firstName = body.firstName;
         speaker.lastName = body.lastName;
         speaker.biography = body.biography;
@@ -87,7 +93,7 @@ export const speakerController = async (
         if (request.user.role !== Models.User.Role.Administrator)
             return reply.status(403).send();
 
-        const { params, body } = request;
+        const { params } = request;
 
         const speaker = await request.em.findOne(entities.speaker, {
             id: params.id,
