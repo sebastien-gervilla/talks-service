@@ -2,7 +2,7 @@ import {
     Entity,
     PrimaryKey,
     Property,
-} from '@mikro-orm/core';
+} from '@mikro-orm/postgresql';
 
 @Entity()
 export class Speaker {

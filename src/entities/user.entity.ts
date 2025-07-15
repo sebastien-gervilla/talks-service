@@ -4,7 +4,7 @@ import {
     Enum,
     PrimaryKey,
     Property,
-} from '@mikro-orm/core';
+} from '@mikro-orm/postgresql';
 
 @Entity()
 export class User {

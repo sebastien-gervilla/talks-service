@@ -13,7 +13,11 @@ export default defineConfig({
     dbName: process.env.POSTGRES_DB,
     user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASS,
-    entities: [entities.user, entities.speaker],
+    entities: [
+        entities.user,
+        entities.speaker,
+        entities.conference,
+    ],
     extensions: [Migrator],
     migrations: {
         path: __dirname + '/migrations'
