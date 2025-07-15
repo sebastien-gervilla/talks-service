@@ -73,4 +73,31 @@ export const speakerController = async (
 
         return reply.status(204).send();
     });
+
+    fastify.delete<{
+        Params: {
+            id: number;
+        };
+        Reply: Responses.Speaker.Delete;
+    }>('/speakers/:id', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        if (request.user.role !== Models.User.Role.Administrator)
+            return reply.status(403).send();
+
+        const { params, body } = request;
+
+        const speaker = await request.em.findOne(entities.speaker, {
+            id: params.id,
+        });
+
+        if (!speaker)
+            return reply.status(404).send();
+
+        await request.em.removeAndFlush(speaker);
+
+        return reply.status(204).send();
+    });
 }

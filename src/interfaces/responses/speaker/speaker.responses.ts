@@ -13,3 +13,8 @@ export interface Put extends HttpResponses {
     204: never;
     404: never;
 }
+
+export interface Delete extends HttpResponses {
+    204: never;
+    404: never;
+}

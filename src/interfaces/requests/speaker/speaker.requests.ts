@@ -10,3 +10,5 @@ export interface Post extends HttpRequest {
 export interface Put extends HttpRequest {
     body: Models.Speaker.Update;
 }
+
+export interface Delete extends HttpRequest { }
