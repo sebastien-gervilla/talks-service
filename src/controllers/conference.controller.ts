@@ -103,4 +103,31 @@ export const conferenceController = async (
 
         return reply.status(204).send();
     });
+
+    fastify.delete<{
+        Params: {
+            id: number;
+        };
+        Reply: Responses.Conference.Delete;
+    }>('/conferences/:id', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        if (request.user.role !== Models.User.Role.Administrator)
+            return reply.status(403).send();
+
+        const { params } = request;
+
+        const conference = await request.em.findOne(entities.conference, {
+            id: params.id,
+        });
+
+        if (!conference)
+            return reply.status(404).send();
+
+        await request.em.removeAndFlush(conference);
+
+        return reply.status(204).send();
+    });
 }

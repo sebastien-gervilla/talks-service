@@ -27,3 +27,8 @@ export interface Put extends HttpResponses {
         | 'unknown-error'
     };
 }
+
+export interface Delete extends HttpResponses {
+    204: never;
+    404: never;
+}
