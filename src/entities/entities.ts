@@ -1,0 +1,1 @@
+export { User as user } from './user.entity';

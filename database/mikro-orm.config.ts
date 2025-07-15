@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import { defineConfig } from '@mikro-orm/postgresql';
 import { Migrator } from '@mikro-orm/migrations';
+import { entities } from '../src/entities';
 
 config({
     path: __dirname + '/../.env'
@@ -12,7 +13,7 @@ export default defineConfig({
     dbName: process.env.POSTGRES_NAME,
     user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASS,
-    entities: [],
+    entities: [entities.user],
     extensions: [Migrator],
     migrations: {
         path: __dirname + '/migrations'
