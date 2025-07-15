@@ -14,3 +14,14 @@ export interface Post extends HttpResponses {
         | 'unknown-error'
     };
 }
+
+export interface Put extends HttpResponses {
+    204: never;
+    404: never;
+    400: {
+        type:
+        | 'missing-fields'
+        | 'room-not-found'
+        | 'unknown-error'
+    };
+}

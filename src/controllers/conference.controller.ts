@@ -48,4 +48,43 @@ export const conferenceController = async (
 
         return reply.status(204).send();
     });
+
+    fastify.put<{
+        Params: {
+            id: number;
+        };
+        Body: Requests.Conference.Put['body'];
+        Reply: Responses.Conference.Put;
+    }>('/conferences', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        if (request.user.role !== Models.User.Role.Administrator)
+            return reply.status(403).send();
+
+        const { params, body } = request;
+
+        const conference = await request.em.findOne(entities.conference, {
+            id: params.id,
+        });
+
+        if (!conference)
+            return reply.status(404).send();
+
+        if (!body.name || !body.room || !body.startsOn || !body.endsOn || !body.speakerId)
+            return reply.status(400).send({ type: 'missing-fields' });
+
+        if (!Object.values(Models.Conference.Room).includes(body.room))
+            return reply.status(400).send({ type: 'room-not-found' });
+
+        conference.name = body.name;
+        conference.room = body.room;
+        conference.startsOn = body.startsOn;
+        conference.endsOn = body.endsOn;
+
+        await request.em.flush();
+
+        return reply.status(204).send();
+    });
 }

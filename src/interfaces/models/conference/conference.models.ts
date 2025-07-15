@@ -7,7 +7,14 @@ export interface Get {
 }
 
 export interface Create {
-    id: number;
+    name: string;
+    room: Room;
+    startsOn: Date;
+    endsOn: Date;
+    speakerId: number;
+}
+
+export interface Update {
     name: string;
     room: Room;
     startsOn: Date;
