@@ -22,7 +22,7 @@ export class Conference {
     @Enum(() => Models.Conference.Room)
     room!: Models.Conference.Room;
 
-    @Property()
+    @Property({ type: 'date' })
     date!: Date;
 
     @Property()

@@ -4,10 +4,11 @@ export interface Get {
     room: Room;
     date: Date;
     slot: number;
+    participants: number;
 }
 
 export interface GetQuery {
-    name?: string;
+    name: string;
     room?: Room;
     date?: Date;
     speakerId?: number;

@@ -4,6 +4,7 @@ import { middlewares } from "@/middlewares";
 import { Models, Requests, Responses } from "@/interfaces";
 import { entities } from "@/entities";
 import { stripTime } from "@/utils/date-utils";
+import { FilterQuery } from "@mikro-orm/postgresql";
 
 export const conferenceController = async (
     fastify: FastifyInstance,
@@ -18,12 +19,32 @@ export const conferenceController = async (
 
         const { query } = request;
 
-        const conferences = await request.em.find(entities.conference, {
-            name: { $like: `%${query.name}%` },
-            date: query.date ? stripTime(query.date) : undefined,
-            room: query.room,
-            speaker: query.speakerId,
+        let where: FilterQuery<entities.conference> = {};
+        if (query.name)
+            where.name = { $like: `%${query.name}%` };
+        if (query.date)
+            where.date = stripTime(query.date);
+        if (query.room)
+            where.room = query.room;
+        if (query.speakerId)
+            where.speaker = query.speakerId;
+
+        const loadedConferences = await request.em.find(entities.conference, where, {
+            populate: ['users'],
+            fields: ['*', 'users.id'],
         });
+
+        const conferences: Models.Conference.Get[] = [];
+        for (const loadedConference of loadedConferences) {
+            conferences.push({
+                id: loadedConference.id,
+                name: loadedConference.name,
+                date: loadedConference.date,
+                slot: loadedConference.slot,
+                room: loadedConference.room,
+                participants: loadedConference.users.getItems().length,
+            });
+        }
 
         return reply.status(200).send(conferences);
     });
@@ -157,10 +178,14 @@ export const conferenceController = async (
 const isValidSlot = (slot: number) => slot > 0 && slot <= 10;
 
 const isValidDate = (date: Date) => {
+    const copy = new Date(date);
+
     // Strip times, for timezones
-    const inputDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const inputDate = new Date(copy.getFullYear(), copy.getMonth(), copy.getDate());
     return inputDate >= EVENT_START_DATE && inputDate <= EVENT_END_DATE;
 };
 
-const EVENT_START_DATE = new Date(2025, 5, 17); // June 17, 2025
+const EVENT_START_DATE = new Date(2025, 5, 18); // June 18, 2025
 const EVENT_END_DATE = new Date(2025, 5, 20);   // June 20, 2025
+
+const ROOM_MAX_USERS = 25;
