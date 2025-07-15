@@ -48,6 +48,7 @@ const initializeServer = async () => {
     // Controllers
     fastify.register(controllers.user);
     fastify.register(controllers.speaker);
+    fastify.register(controllers.conference);
 
     // Server listening
     await fastify.listen({ port, host: '0.0.0.0' });
