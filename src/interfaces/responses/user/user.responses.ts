@@ -26,3 +26,7 @@ export interface Login extends HttpResponses {
         | 'unknown-error'
     };
 }
+
+export interface Logout extends HttpResponses {
+    204: never;
+}

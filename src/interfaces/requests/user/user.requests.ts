@@ -10,3 +10,5 @@ export interface Register extends HttpRequest {
 export interface Login extends HttpRequest {
     body: Models.User.Login;
 }
+
+export interface Logout extends HttpRequest { }

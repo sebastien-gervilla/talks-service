@@ -104,7 +104,28 @@ export const userController = async (
         );
 
         return reply
-            .setCookie('token', token)
+            .setCookie('token', token, {
+                httpOnly: true,
+                secure: environment.nodeEnv === 'production',
+                path: '/',
+            })
+            .status(204)
+            .send();
+    });
+
+    fastify.post<{
+        Reply: Responses.User.Logout;
+    }>('/users/logout', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        return reply
+            .clearCookie('token', {
+                path: '/',
+                httpOnly: true,
+                secure: environment.nodeEnv === 'production',
+            })
             .status(204)
             .send();
     });
