@@ -47,3 +47,13 @@ export interface Join extends HttpResponses {
         | 'unknown-error'
     };
 }
+
+export interface Leave extends HttpResponses {
+    204: never;
+    404: never;
+    400: {
+        type:
+        | 'not-yet-joined'
+        | 'unknown-error'
+    };
+}

@@ -16,3 +16,5 @@ export interface Put extends HttpRequest {
 export interface Delete extends HttpRequest { }
 
 export interface Join extends HttpRequest { }
+
+export interface Leave extends HttpRequest { }

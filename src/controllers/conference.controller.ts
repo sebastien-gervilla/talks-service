@@ -202,7 +202,46 @@ export const conferenceController = async (
         if (conference.users.contains(user))
             return reply.status(400).send({ type: 'already-joined' });
 
+        if (conference.users.length >= ROOM_MAX_USERS)
+            return reply.status(400).send({ type: 'room-already-full' });
+
         conference.users.add(user);
+
+        await request.em.flush();
+
+        return reply.status(204).send();
+    });
+
+    fastify.patch<{
+        Params: {
+            id: number;
+        };
+        Reply: Responses.Conference.Leave;
+    }>('/conferences/:id/leave', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        const user = await request.em.findOne(entities.user, {
+            id: request.user.id
+        });
+
+        if (!user)
+            return reply.status(404).send();
+
+        const conference = await request.em.findOne(entities.conference, {
+            id: request.params.id,
+        }, {
+            populate: ['users']
+        });
+
+        if (!conference)
+            return reply.status(404).send();
+
+        if (!conference.users.contains(user))
+            return reply.status(400).send({ type: 'not-yet-joined' });
+
+        conference.users.remove(user);
 
         await request.em.flush();
 
