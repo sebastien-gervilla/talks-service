@@ -6,6 +6,15 @@ export interface Get {
     endsOn: Date;
 }
 
+export interface Create {
+    id: number;
+    name: string;
+    room: Room;
+    startsOn: Date;
+    endsOn: Date;
+    speakerId: number;
+}
+
 export enum Room {
     RoomA = "room-a",
     RoomB = "room-b",

@@ -18,4 +18,34 @@ export const conferenceController = async (
 
         return reply.status(200).send(conferences);
     });
+
+    fastify.post<{
+        Body: Requests.Conference.Post['body'];
+        Reply: Responses.Conference.Post;
+    }>('/conferences', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        if (request.user.role !== Models.User.Role.Administrator)
+            return reply.status(403).send();
+
+        const { body } = request;
+
+        if (!body.name || !body.room || !body.startsOn || !body.endsOn || !body.speakerId)
+            return reply.status(400).send({ type: 'missing-fields' });
+
+        if (!Object.values(Models.Conference.Room).includes(body.room))
+            return reply.status(400).send({ type: 'room-not-found' });
+
+        const conference = new entities.conference();
+        conference.name = body.name;
+        conference.room = body.room;
+        conference.startsOn = body.startsOn;
+        conference.endsOn = body.endsOn;
+
+        await request.em.persistAndFlush(conference);
+
+        return reply.status(204).send();
+    });
 }
