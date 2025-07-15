@@ -39,6 +39,7 @@ export const userController = async (
         user.lastName = body.lastName;
         user.email = body.email;
         user.password = hashedPassword;
+        user.role = Models.User.Role.Member;
 
         await request.em.persistAndFlush(user);
 
