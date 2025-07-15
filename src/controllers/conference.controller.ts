@@ -99,7 +99,7 @@ export const conferenceController = async (
         };
         Body: Requests.Conference.Put['body'];
         Reply: Responses.Conference.Put;
-    }>('/conferences', { preHandler: middlewares.authentication }, async (request, reply) => {
+    }>('/conferences/:id', { preHandler: middlewares.authentication }, async (request, reply) => {
 
         if (!request.user)
             return reply.status(401).send();
@@ -169,6 +169,42 @@ export const conferenceController = async (
             return reply.status(404).send();
 
         await request.em.removeAndFlush(conference);
+
+        return reply.status(204).send();
+    });
+
+    fastify.patch<{
+        Params: {
+            id: number;
+        };
+        Reply: Responses.Conference.Join;
+    }>('/conferences/:id/join', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        const user = await request.em.findOne(entities.user, {
+            id: request.user.id
+        });
+
+        if (!user)
+            return reply.status(404).send();
+
+        const conference = await request.em.findOne(entities.conference, {
+            id: request.params.id,
+        }, {
+            populate: ['users']
+        });
+
+        if (!conference)
+            return reply.status(404).send();
+
+        if (conference.users.contains(user))
+            return reply.status(400).send({ type: 'already-joined' });
+
+        conference.users.add(user);
+
+        await request.em.flush();
 
         return reply.status(204).send();
     });

@@ -36,3 +36,14 @@ export interface Delete extends HttpResponses {
     204: never;
     404: never;
 }
+
+export interface Join extends HttpResponses {
+    204: never;
+    404: never;
+    400: {
+        type:
+        | 'room-already-full'
+        | 'already-joined'
+        | 'unknown-error'
+    };
+}
