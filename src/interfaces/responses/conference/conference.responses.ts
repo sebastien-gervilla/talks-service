@@ -11,6 +11,7 @@ export interface Post extends HttpResponses {
         type:
         | 'missing-fields'
         | 'room-not-found'
+        | 'speaker-not-found'
         | 'unknown-error'
     };
 }
@@ -22,6 +23,7 @@ export interface Put extends HttpResponses {
         type:
         | 'missing-fields'
         | 'room-not-found'
+        | 'speaker-not-found'
         | 'unknown-error'
     };
 }

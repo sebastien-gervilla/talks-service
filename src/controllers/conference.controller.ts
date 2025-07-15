@@ -38,11 +38,19 @@ export const conferenceController = async (
         if (!Object.values(Models.Conference.Room).includes(body.room))
             return reply.status(400).send({ type: 'room-not-found' });
 
+        const speaker = await request.em.findOne(entities.speaker, {
+            id: body.speakerId,
+        });
+
+        if (!speaker)
+            return reply.status(400).send({ type: 'speaker-not-found' });
+
         const conference = new entities.conference();
         conference.name = body.name;
         conference.room = body.room;
         conference.startsOn = body.startsOn;
         conference.endsOn = body.endsOn;
+        conference.speaker = speaker;
 
         await request.em.persistAndFlush(conference);
 
@@ -78,10 +86,18 @@ export const conferenceController = async (
         if (!Object.values(Models.Conference.Room).includes(body.room))
             return reply.status(400).send({ type: 'room-not-found' });
 
+        const speaker = await request.em.findOne(entities.speaker, {
+            id: body.speakerId,
+        });
+
+        if (!speaker)
+            return reply.status(400).send({ type: 'speaker-not-found' });
+
         conference.name = body.name;
         conference.room = body.room;
         conference.startsOn = body.startsOn;
         conference.endsOn = body.endsOn;
+        conference.speaker = speaker;
 
         await request.em.flush();
 

@@ -2,9 +2,11 @@ import { Models } from '../interfaces';
 import {
     Entity,
     Enum,
+    ManyToOne,
     PrimaryKey,
     Property,
 } from '@mikro-orm/postgresql';
+import { Speaker } from './speaker.entity';
 
 @Entity()
 export class Conference {
@@ -28,4 +30,7 @@ export class Conference {
 
     @Property()
     updatedAt: Date = new Date();
+
+    @ManyToOne(() => Speaker)
+    speaker!: Speaker;
 }
