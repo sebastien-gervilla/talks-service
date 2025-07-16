@@ -18,6 +18,7 @@ export interface Post extends HttpResponses {
         | 'invalid-slot'
         | 'room-not-found'
         | 'speaker-not-found'
+        | 'slot-already-taken'
         | 'unknown-error'
     };
 }
@@ -32,6 +33,7 @@ export interface Put extends HttpResponses {
         | 'invalid-slot'
         | 'room-not-found'
         | 'speaker-not-found'
+        | 'slot-already-taken'
         | 'unknown-error'
     };
 }

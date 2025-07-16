@@ -23,7 +23,7 @@ export const conferenceController = async (
         if (query.name)
             where.name = { $like: `%${query.name}%` };
         if (query.date)
-            where.date = stripTime(query.date);
+            where.date = query.date;
         if (query.room)
             where.room = query.room;
         if (query.speakerId)
@@ -87,6 +87,15 @@ export const conferenceController = async (
         if (!speaker)
             return reply.status(400).send({ type: 'speaker-not-found' });
 
+        const existingConference = await request.em.findOne(entities.conference, {
+            date: body.date,
+            slot: body.slot,
+            room: body.room,
+        });
+
+        if (existingConference)
+            return reply.status(400).send({ type: 'slot-already-taken' });
+
         const conference = new entities.conference();
         conference.name = body.name;
         conference.room = body.room;
@@ -111,7 +120,7 @@ export const conferenceController = async (
             return reply.status(200).send([]);
 
         const conferences = await request.em.find(entities.conference, {
-            date: stripTime(request.query.date),
+            date: request.query.date,
         });
 
         // Tracking used rooms for each slot
