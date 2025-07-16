@@ -5,6 +5,12 @@ export interface Get extends HttpRequest {
     query: Models.Conference.GetQuery;
 }
 
+export interface GetAvailableSlots extends HttpRequest {
+    query: {
+        date: Date;
+    };
+}
+
 export interface Post extends HttpRequest {
     body: Models.Conference.Create;
 }

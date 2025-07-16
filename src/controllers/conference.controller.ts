@@ -99,6 +99,55 @@ export const conferenceController = async (
         return reply.status(204).send();
     });
 
+    fastify.get<{
+        Querystring: Requests.Conference.GetAvailableSlots['query'];
+        Reply: Responses.Conference.GetAvailableSlots;
+    }>('/conferences/available-slots', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        if (!request.query.date)
+            return reply.status(200).send([]);
+
+        const conferences = await request.em.find(entities.conference, {
+            date: stripTime(request.query.date),
+        });
+
+        // Tracking used rooms for each slot
+        const used = new Map<number, Models.Conference.Room[]>();
+        for (const conference of conferences) {
+            const usedRooms = used.get(conference.slot);
+            if (!usedRooms)
+                used.set(conference.slot, [conference.room]);
+            else
+                usedRooms.push(conference.room);
+        }
+
+        // Getting available rooms for each slot
+        const availableSlots: Models.Conference.GetAvailableSlot[] = [];
+        for (let slot = 1; slot <= DAY_SLOTS; slot++) {
+
+            const availableSlot: Models.Conference.GetAvailableSlot = {
+                slot,
+                rooms: [],
+            };
+
+            for (const room of ROOMS) {
+                const usedRooms = used.get(slot);
+                if (usedRooms && usedRooms.includes(room))
+                    continue;
+
+                availableSlot.rooms.push(room);
+            }
+
+            if (availableSlot.rooms.length > 0)
+                availableSlots.push(availableSlot);
+        }
+
+        return reply.status(200).send(availableSlots);
+    });
+
     fastify.put<{
         Params: {
             id: number;
@@ -256,7 +305,7 @@ export const conferenceController = async (
 }
 
 // Slot must be between 1 and 10
-const isValidSlot = (slot: number) => slot > 0 && slot <= 10;
+const isValidSlot = (slot: number) => slot > 0 && slot <= DAY_SLOTS;
 
 const isValidDate = (date: Date) => {
     const copy = new Date(date);
@@ -270,3 +319,17 @@ const EVENT_START_DATE = new Date(2025, 5, 18); // June 18, 2025
 const EVENT_END_DATE = new Date(2025, 5, 20);   // June 20, 2025
 
 const ROOM_MAX_USERS = 25;
+const DAY_SLOTS = 10;
+
+export const ROOMS = [
+    Models.Conference.Room.RoomA,
+    Models.Conference.Room.RoomB,
+    Models.Conference.Room.RoomC,
+    Models.Conference.Room.RoomD,
+    Models.Conference.Room.RoomE,
+    Models.Conference.Room.RoomF,
+    Models.Conference.Room.RoomG,
+    Models.Conference.Room.RoomH,
+    Models.Conference.Room.RoomI,
+    Models.Conference.Room.RoomJ,
+];

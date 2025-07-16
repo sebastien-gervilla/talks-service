@@ -10,6 +10,11 @@ export interface Get {
     users: number[];
 }
 
+export interface GetAvailableSlot {
+    slot: number;
+    rooms: Room[];
+}
+
 export interface GetByDay {
     date: Date;
     conferences: Get[];

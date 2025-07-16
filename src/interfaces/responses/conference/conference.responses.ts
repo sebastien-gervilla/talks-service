@@ -5,6 +5,10 @@ export interface Get extends HttpResponses {
     200: Models.Conference.Get[];
 }
 
+export interface GetAvailableSlots extends HttpResponses {
+    200: Models.Conference.GetAvailableSlot[];
+}
+
 export interface Post extends HttpResponses {
     204: never;
     400: {
