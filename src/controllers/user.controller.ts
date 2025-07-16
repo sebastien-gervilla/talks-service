@@ -35,6 +35,32 @@ export const userController = async (
         });
     });
 
+    fastify.delete<{
+        Reply: Responses.User.DeleteCurrent;
+    }>('/users/current', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        const user = await request.em.findOne(entities.user, {
+            id: request.user.id
+        });
+
+        if (!user)
+            return reply.status(404).send();
+
+        await request.em.removeAndFlush(user);
+
+        return reply
+            .clearCookie('token', {
+                path: '/',
+                httpOnly: true,
+                secure: environment.nodeEnv === 'production',
+            })
+            .status(204)
+            .send();
+    });
+
     fastify.post<{
         Body: Requests.User.Register['body'];
         Reply: Responses.User.Register;

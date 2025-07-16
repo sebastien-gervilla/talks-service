@@ -30,3 +30,8 @@ export interface Login extends HttpResponses {
 export interface Logout extends HttpResponses {
     204: never;
 }
+
+export interface DeleteCurrent extends HttpResponses {
+    204: never;
+    404: never;
+}

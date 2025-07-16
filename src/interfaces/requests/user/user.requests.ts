@@ -12,3 +12,5 @@ export interface Login extends HttpRequest {
 }
 
 export interface Logout extends HttpRequest { }
+
+export interface DeleteCurrent extends HttpRequest { }
