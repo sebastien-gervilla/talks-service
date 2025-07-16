@@ -20,7 +20,7 @@ export const conferenceController = async (
 
         let where: FilterQuery<entities.conference> = {};
         if (query.name)
-            where.name = { $like: `%${query.name}%` };
+            where.name = { $ilike: `%${query.name}%` };
         if (query.date)
             where.date = query.date;
         if (query.room)
