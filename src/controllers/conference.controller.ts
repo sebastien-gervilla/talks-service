@@ -43,6 +43,7 @@ export const conferenceController = async (
             conferences.push({
                 id: loadedConference.id,
                 name: loadedConference.name,
+                description: loadedConference.description,
                 date: loadedConference.date,
                 slot: loadedConference.slot,
                 room: loadedConference.room,
@@ -102,6 +103,7 @@ export const conferenceController = async (
 
         const conference = new entities.conference();
         conference.name = body.name;
+        conference.description = body.description;
         conference.room = body.room;
         conference.date = body.date;
         conference.slot = body.slot;
@@ -204,6 +206,7 @@ export const conferenceController = async (
             return reply.status(400).send({ type: 'speaker-not-found' });
 
         conference.name = body.name;
+        conference.description = body.description;
         conference.room = body.room;
         conference.date = body.date;
         conference.slot = body.slot;

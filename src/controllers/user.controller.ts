@@ -84,6 +84,7 @@ export const userController = async (
             const conference: Models.Conference.Get = {
                 id: loadedConference.id,
                 name: loadedConference.name,
+                description: loadedConference.description,
                 date: loadedConference.date,
                 slot: loadedConference.slot,
                 room: loadedConference.room,

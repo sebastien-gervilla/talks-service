@@ -3,6 +3,7 @@ import { Models } from "@/interfaces";
 export interface Get {
     id: number;
     name: string;
+    description: string;
     room: Room;
     date: Date;
     slot: number;
@@ -29,6 +30,7 @@ export interface GetQuery {
 
 export interface Create {
     name: string;
+    description: string;
     room: Room;
     date: Date;
     slot: number;
@@ -37,6 +39,7 @@ export interface Create {
 
 export interface Update {
     name: string;
+    description: string;
     room: Room;
     date: Date;
     slot: number;

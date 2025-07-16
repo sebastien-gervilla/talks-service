@@ -19,6 +19,9 @@ export class Conference {
     @Property()
     name!: string;
 
+    @Property()
+    description!: string;
+
     @Enum(() => Models.Conference.Room)
     room!: Models.Conference.Room;
 
