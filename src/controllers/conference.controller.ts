@@ -30,7 +30,7 @@ export const conferenceController = async (
             where.speaker = query.speakerId;
 
         const loadedConferences = await request.em.find(entities.conference, where, {
-            populate: ['users'],
+            populate: ['users', 'speaker'],
             fields: ['*', 'users.id'],
         });
 
@@ -42,6 +42,12 @@ export const conferenceController = async (
                 date: loadedConference.date,
                 slot: loadedConference.slot,
                 room: loadedConference.room,
+                speaker: {
+                    id: loadedConference.speaker.id,
+                    firstName: loadedConference.speaker.firstName,
+                    lastName: loadedConference.speaker.lastName,
+                    biography: loadedConference.speaker.biography,
+                },
                 users: loadedConference.users.getItems().map(user => user.id),
             });
         }

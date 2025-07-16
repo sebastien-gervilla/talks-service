@@ -1,9 +1,12 @@
+import { Models } from "@/interfaces";
+
 export interface Get {
     id: number;
     name: string;
     room: Room;
     date: Date;
     slot: number;
+    speaker: Models.Speaker.Get;
     users: number[];
 }
 
