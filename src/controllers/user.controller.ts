@@ -37,7 +37,7 @@ export const userController = async (
 
     fastify.delete<{
         Reply: Responses.User.DeleteCurrent;
-    }>('/users/current', { preHandler: middlewares.authentication }, async (request, reply) => {
+    }>('/users/current/account', { preHandler: middlewares.authentication }, async (request, reply) => {
 
         if (!request.user)
             return reply.status(401).send();
