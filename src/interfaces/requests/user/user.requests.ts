@@ -3,6 +3,8 @@ import { HttpRequest } from "@/interfaces/http-interface";
 
 export interface GetCurrent extends HttpRequest { }
 
+export interface GetCurrentConferences extends HttpRequest { }
+
 export interface Register extends HttpRequest {
     body: Models.User.Register;
 }

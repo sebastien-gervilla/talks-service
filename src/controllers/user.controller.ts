@@ -8,6 +8,7 @@ import { middlewares } from "@/middlewares";
 import { Models, Requests, Responses } from "@/interfaces";
 import { entities } from "@/entities";
 import { environment } from '@/configuration/environment';
+import { isSameDay } from '@/utils/date-utils';
 
 export const userController = async (
     fastify: FastifyInstance,
@@ -59,6 +60,53 @@ export const userController = async (
             })
             .status(204)
             .send();
+    });
+
+    fastify.get<{
+        Reply: Responses.User.GetCurrentConferences;
+    }>('/users/current/conferences', { preHandler: middlewares.authentication }, async (request, reply) => {
+
+        if (!request.user)
+            return reply.status(401).send();
+
+        const user = await request.em.findOne(entities.user, {
+            id: request.user.id,
+        }, {
+            populate: ['conferences', 'conferences.users', 'conferences.speaker'],
+        });
+
+        if (!user)
+            return reply.status(401).send();
+
+        const daysConferences: Models.Conference.GetByDay[] = [];
+        for (const loadedConference of user.conferences.getItems()) {
+
+            const conference: Models.Conference.Get = {
+                id: loadedConference.id,
+                name: loadedConference.name,
+                date: loadedConference.date,
+                slot: loadedConference.slot,
+                room: loadedConference.room,
+                speaker: {
+                    id: loadedConference.speaker.id,
+                    firstName: loadedConference.speaker.firstName,
+                    lastName: loadedConference.speaker.lastName,
+                    biography: loadedConference.speaker.biography,
+                },
+                users: loadedConference.users.getItems().map(user => user.id),
+            };
+
+            const dayConferences = daysConferences.find(day => isSameDay(day.date, conference.date));
+            if (!dayConferences)
+                daysConferences.push({
+                    date: conference.date,
+                    conferences: [conference],
+                });
+            else
+                dayConferences.conferences.push(conference);
+        }
+
+        return reply.status(200).send(daysConferences);
     });
 
     fastify.post<{

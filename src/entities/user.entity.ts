@@ -35,6 +35,6 @@ export class User {
     @Property()
     updatedAt: Date = new Date();
 
-    @ManyToMany({ entity: () => Conference })
+    @ManyToMany(() => Conference, conference => conference.users)
     conferences = new Collection<Conference>(this);
 }

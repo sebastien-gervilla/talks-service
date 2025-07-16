@@ -37,6 +37,6 @@ export class Conference {
     @ManyToOne(() => Speaker)
     speaker!: Speaker;
 
-    @ManyToMany({ entity: () => User })
+    @ManyToMany(() => User, 'conferences', { owner: true })
     users = new Collection<User>(this);
 }

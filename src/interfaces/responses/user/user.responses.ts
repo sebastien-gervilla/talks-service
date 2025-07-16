@@ -5,6 +5,10 @@ export interface GetCurrent extends HttpResponses {
     200: Models.User.Current;
 }
 
+export interface GetCurrentConferences extends HttpResponses {
+    200: Models.Conference.GetByDay[];
+}
+
 export interface Register extends HttpResponses {
     204: never;
     400: {

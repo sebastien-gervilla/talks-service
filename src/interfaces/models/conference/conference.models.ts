@@ -10,6 +10,11 @@ export interface Get {
     users: number[];
 }
 
+export interface GetByDay {
+    date: Date;
+    conferences: Get[];
+}
+
 export interface GetQuery {
     name: string;
     room?: Room;
