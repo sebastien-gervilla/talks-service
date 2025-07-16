@@ -3,7 +3,6 @@ import { FastifyInstance } from "fastify";
 import { middlewares } from "@/middlewares";
 import { Models, Requests, Responses } from "@/interfaces";
 import { entities } from "@/entities";
-import { stripTime } from "@/utils/date-utils";
 import { FilterQuery } from "@mikro-orm/postgresql";
 
 export const conferenceController = async (
@@ -32,6 +31,11 @@ export const conferenceController = async (
         const loadedConferences = await request.em.find(entities.conference, where, {
             populate: ['users', 'speaker'],
             fields: ['*', 'users.id'],
+            orderBy: {
+                date: 'ASC',
+                slot: 'ASC',
+                room: 'ASC'
+            },
         });
 
         const conferences: Models.Conference.Get[] = [];
