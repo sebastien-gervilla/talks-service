@@ -20,6 +20,8 @@
     "@mikro-orm/postgresql": "^6.4.16",
     "@mikro-orm/reflection": "^6.4.16",
     "@mikro-orm/sqlite": "^6.4.16",
+    "@types/bcryptjs": "^3.0.0",
+    "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.0",
     "fastify": "^5.4.0",
     "jsonwebtoken": "^9.0.2"
@@ -29,6 +31,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/module-alias": "^2.0.4",
     "@types/node": "^24.0.14",
+    "module-alias": "^2.2.3",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.16",

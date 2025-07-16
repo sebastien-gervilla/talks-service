@@ -2,17 +2,16 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export interface Environment {
-    nodeEnv: 'production' | 'release' | 'development' | 'test';
+    nodeEnv: 'production' | 'release' | 'development';
     port: number;
     allowedOrigin: string;
     jwtSecret: string;
-    databaseUri: string;
 }
 
 const nodeEnv = process.env.NODE_ENV;
 if (!nodeEnv) throw new Error('NODE_ENV must be defined.');
 
-const environments: Environment['nodeEnv'][] = ['test', 'development', 'release', 'production'];
+const environments: Environment['nodeEnv'][] = ['development', 'release', 'production'];
 const nodeEnvironment = environments.find((variable) => variable === nodeEnv.trim());
 if (!nodeEnvironment) throw new Error(`NODE_ENV must be in ${environments}.`);
 
@@ -20,7 +19,6 @@ const environmentVariables = [
     'PORT',
     'ALLOWED_ORIGIN',
     'JWT_SECRET',
-    'DATABASE_URI',
 ] as const;
 
 for (const variable of environmentVariables)
@@ -32,7 +30,6 @@ const environment: Environment = {
     port: parseInt(process.env.PORT!),
     allowedOrigin: process.env.ALLOWED_ORIGIN!,
     jwtSecret: process.env.JWT_SECRET!,
-    databaseUri: process.env.DATABASE_URI!,
 };
 
 export { environment };
