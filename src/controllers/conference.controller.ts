@@ -256,6 +256,8 @@ export const conferenceController = async (
 
         const user = await request.em.findOne(entities.user, {
             id: request.user.id
+        }, {
+            populate: ['conferences']
         });
 
         if (!user)
@@ -275,6 +277,12 @@ export const conferenceController = async (
 
         if (conference.users.length >= ROOM_MAX_USERS)
             return reply.status(400).send({ type: 'room-already-full' });
+
+        const isSlotConflict = user.conferences
+            .getItems()
+            .some(userConference => userConference.date.getTime() === conference.date.getTime() && userConference.slot === conference.slot);
+        if (isSlotConflict)
+            return reply.status(400).send({ type: 'slot-conflict' });
 
         conference.users.add(user);
 
